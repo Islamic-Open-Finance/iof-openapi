@@ -1,0 +1,37 @@
+{
+  "description": "Example Murabaha contract creation for vehicle financing",
+  "request": {
+    "method": "POST",
+    "url": "/api/v1/contracts/murabaha",
+    "headers": {
+      "Authorization": "Bearer eyJhbGciOiJSUzI1NiIs...",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "customer_id": "CUST-123",
+      "asset_description": "Toyota Camry 2024",
+      "asset_category": "VEHICLE",
+      "cost_price": 50000,
+      "profit_amount": 5000,
+      "installment_count": 24,
+      "currency": "SAR"
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "id": "CNT-789",
+      "tenant_id": "tenant_abc123",
+      "workspace_id": "prod",
+      "customer_id": "CUST-123",
+      "asset_description": "Toyota Camry 2024",
+      "cost_price": 50000,
+      "profit_amount": 5000,
+      "total_amount": 55000,
+      "installment_count": 24,
+      "status": "DRAFT",
+      "created_at": "2025-12-23T10:30:00Z",
+      "updated_at": "2025-12-23T10:30:00Z"
+    }
+  }
+}

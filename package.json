@@ -1,0 +1,41 @@
+{
+  "name": "@iof/openapi",
+  "version": "1.0.0",
+  "description": "Official OpenAPI 3.1 specification for the Islamic Open Finance Platform",
+  "main": "spec/openapi.yaml",
+  "scripts": {
+    "serve": "npx @redocly/cli preview-docs spec/openapi.yaml",
+    "build:docs": "npx @redocly/cli build-docs spec/openapi.yaml -o docs/index.html",
+    "lint": "npx @redocly/cli lint spec/openapi.yaml",
+    "validate": "npx @stoplight/spectral-cli lint spec/openapi.yaml",
+    "bundle": "npx @redocly/cli bundle spec/openapi.yaml -o dist/openapi.yaml",
+    "generate:typescript": "npx @openapitools/openapi-generator-cli generate -i spec/openapi.yaml -g typescript-fetch -o generated/typescript",
+    "generate:python": "npx @openapitools/openapi-generator-cli generate -i spec/openapi.yaml -g python -o generated/python",
+    "generate:java": "npx @openapitools/openapi-generator-cli generate -i spec/openapi.yaml -g java -o generated/java",
+    "generate:go": "npx @openapitools/openapi-generator-cli generate -i spec/openapi.yaml -g go -o generated/go"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Islamic-Open-Finance/iof-openapi.git"
+  },
+  "keywords": [
+    "openapi",
+    "islamic-finance",
+    "shariah-compliant",
+    "api",
+    "specification",
+    "fintech",
+    "banking"
+  ],
+  "author": "Islamic Open Finance",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Islamic-Open-Finance/iof-openapi/issues"
+  },
+  "homepage": "https://github.com/Islamic-Open-Finance/iof-openapi#readme",
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
+    "@redocly/cli": "^1.10.0",
+    "@stoplight/spectral-cli": "^6.11.0"
+  }
+}
