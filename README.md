@@ -367,12 +367,10 @@ curl -X GET \
 
 Official SDKs are available in multiple languages:
 
-| Language       | Package                 | Repository                                                                                   |
-| -------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
-| **TypeScript** | `@iof/sdk`              | [iof-sdks/typescript](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/typescript) |
-| **Python**     | `iof-sdk`               | [iof-sdks/python](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/python)         |
-| **Java**       | `com.iof:iof-sdk`       | [iof-sdks/java](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/java)             |
-| **Go**         | `github.com/iof/go-sdk` | [iof-sdks/go](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/go)                 |
+| Language       | Package                 | Repository                                                            |
+| -------------- | ----------------------- | --------------------------------------------------------------------- |
+| **TypeScript** | `@islamic-open-finance/sdk` | [iof-sdk-typescript](https://github.com/Islamic-Open-Finance/iof-sdk-typescript) |
+| **Python**     | `iof-sdk`               | [iof-sdk-python](https://github.com/Islamic-Open-Finance/iof-sdk-python)         |
 
 ## Validation
 
@@ -424,10 +422,11 @@ This project is licensed under the Apache License 2.0 - see [LICENSE](LICENSE) f
 
 ## Related Projects
 
-- [IOF SDKs](https://github.com/Islamic-Open-Finance/iof-sdks) - Official client libraries
+- [IOF TypeScript SDK](https://github.com/Islamic-Open-Finance/iof-sdk-typescript) - TypeScript/JavaScript client
+- [IOF Python SDK](https://github.com/Islamic-Open-Finance/iof-sdk-python) - Python client
 - [IOF Mock Server](https://github.com/Islamic-Open-Finance/iof-mock) - Testing mock server
 - [IOF DevTools](https://github.com/Islamic-Open-Finance/iof-devtools) - CLI tools and utilities
-- [IOF Platform](https://github.com/Islamic-Open-Finance/app) - Main platform repository
+- [IOF Helm Charts](https://github.com/Islamic-Open-Finance/iof-helm-charts) - Kubernetes deployment
 
 ---
 
