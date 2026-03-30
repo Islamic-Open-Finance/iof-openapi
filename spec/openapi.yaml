@@ -1,17 +1,20 @@
 openapi: 3.1.0
 info:
-  title: Islamic Open Finance (IOF) Platform API
+  title: Islamic Open Finance™ (IOF) Platform API
   version: 1.0.0
   description: |
-    Complete OpenAPI specification for the Islamic Open Finance Platform.
+    Complete OpenAPI specification for the Islamic Open Finance™ Platform.
 
-    The IOF Platform provides 29 specialized Rails for Shariah-compliant banking operations:
-    - Core Rails (5): Contracts, Cards, Clearing, Treasury, Shariah
-    - Access & Identity (3): IAM, Organizations, Workspaces
-    - Operations (6): Transactions, Transfers, Reconciliation, Events, Webhooks, Audit
-    - Financial (4): Ledger, Products, Pricing, Limits
-    - Governance (9): KYC/KYB, AML/CFT, Consent/Privacy, Disputes, Collections, Zakat, Impact, Observability
-    - Developer & Partner (2): Developer, Partners
+    The IOF Platform provides 56 specialized Rails for Shariah-compliant banking operations:
+    - Core Business (6): Contracts, KYC, Compliance, AML, Zakat, Cards
+    - Financial (8): Treasury, Clearing, Portfolio, Risk, Limits, Underwriting, Ledger, Billing
+    - Payments & Routing (5): Routing, Messages, ISO 20022, Reconciliation, Transfers
+    - Governance & Legal (5): Governance, Legal, Disputes, Cases, Collections
+    - Identity & Access (7): Auth, OAuth2, SAML, Consent, API Keys, MFA, IAM
+    - Integration & Events (6): Webhooks, Events, Notifications, Integrations, Partners, Developer
+    - Infrastructure (9): Analytics, Reporting, Search, Audit, Observability, Health, Metadata, Taxonomy, Secrets
+    - Control Plane (6): Workspaces, Organizations, Feature Flags, BYOC, Jurisdictions, Residency
+    - Data & Records (4): Documents, Data Quality, Retention, Reference Data
 
     All APIs follow AAOIFI standards for Islamic finance compliance.
 
@@ -99,6 +102,18 @@ tags:
     description: Entity registry, lineage, classification
   - name: Taxonomy
     description: Controlled vocabularies and term management
+  - name: Retention
+    description: Records retention, legal holds, WORM storage, purge workflows
+  - name: Secrets
+    description: Key management, cryptographic operations, HSM/KMS integration
+  - name: Limits
+    description: Transaction limits, 4-eyes approval, breach detection
+  - name: DataQuality
+    description: Schema validation, anomaly detection, quality scoring
+  - name: Integrations
+    description: External connectors, ETL/CDC, data mapping, sync orchestration
+  - name: SLAIncident
+    description: SLA definitions, incident lifecycle, RCA, status page
 
 paths:
   # Contracts Rail
@@ -445,6 +460,750 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedTerms"
+
+  # ============================================
+  # Banking-Grade Operational Rails
+  # ============================================
+
+  # Records Retention Rail
+  /api/v1/retention/policies:
+    get:
+      tags: [Retention]
+      summary: List retention policies
+      operationId: listRetentionPolicies
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of retention policies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedRetentionPolicies"
+
+    post:
+      tags: [Retention]
+      summary: Create retention policy
+      operationId: createRetentionPolicy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRetentionPolicyRequest"
+      responses:
+        "201":
+          description: Policy created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetentionPolicy"
+
+  /api/v1/retention/legal-holds:
+    get:
+      tags: [Retention]
+      summary: List legal holds
+      operationId: listLegalHolds
+      responses:
+        "200":
+          description: List of legal holds
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedLegalHolds"
+
+    post:
+      tags: [Retention]
+      summary: Create legal hold
+      operationId: createLegalHold
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLegalHoldRequest"
+      responses:
+        "201":
+          description: Legal hold created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LegalHold"
+
+  /api/v1/retention/legal-holds/{id}/release:
+    post:
+      tags: [Retention]
+      summary: Release legal hold
+      operationId: releaseLegalHold
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Legal hold released
+
+  /api/v1/retention/purge-requests:
+    post:
+      tags: [Retention]
+      summary: Create purge request
+      operationId: createPurgeRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePurgeRequest"
+      responses:
+        "201":
+          description: Purge request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurgeRequest"
+
+  # Secrets & Keys Rail
+  /api/v1/secrets/key-rings:
+    get:
+      tags: [Secrets]
+      summary: List key rings
+      operationId: listKeyRings
+      responses:
+        "200":
+          description: List of key rings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedKeyRings"
+
+    post:
+      tags: [Secrets]
+      summary: Create key ring
+      operationId: createKeyRing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateKeyRingRequest"
+      responses:
+        "201":
+          description: Key ring created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KeyRing"
+
+  /api/v1/secrets/keys:
+    get:
+      tags: [Secrets]
+      summary: List keys
+      operationId: listKeys
+      responses:
+        "200":
+          description: List of keys
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedKeys"
+
+    post:
+      tags: [Secrets]
+      summary: Create key
+      operationId: createKey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateKeyRequest"
+      responses:
+        "201":
+          description: Key created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CryptoKey"
+
+  /api/v1/secrets/keys/{id}/rotate:
+    post:
+      tags: [Secrets]
+      summary: Rotate key
+      operationId: rotateKey
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Key rotated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CryptoKey"
+
+  /api/v1/secrets/sign:
+    post:
+      tags: [Secrets]
+      summary: Sign data
+      operationId: signData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignRequest"
+      responses:
+        "200":
+          description: Signature created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignResponse"
+
+  /api/v1/secrets/verify:
+    post:
+      tags: [Secrets]
+      summary: Verify signature
+      operationId: verifySignature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyRequest"
+      responses:
+        "200":
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyResponse"
+
+  # Limits & Controls Rail
+  /api/v1/limits:
+    get:
+      tags: [Limits]
+      summary: List limits
+      operationId: listLimits
+      responses:
+        "200":
+          description: List of limits
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedLimits"
+
+    post:
+      tags: [Limits]
+      summary: Create limit
+      operationId: createLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLimitRequest"
+      responses:
+        "201":
+          description: Limit created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Limit"
+
+  /api/v1/limits/check:
+    post:
+      tags: [Limits]
+      summary: Check transaction against limits
+      operationId: checkLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LimitCheckRequest"
+      responses:
+        "200":
+          description: Limit check result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LimitCheckResult"
+
+  /api/v1/limits/approvals:
+    get:
+      tags: [Limits]
+      summary: List pending approvals
+      operationId: listApprovals
+      responses:
+        "200":
+          description: List of pending approvals
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedApprovals"
+
+    post:
+      tags: [Limits]
+      summary: Request 4-eyes approval
+      operationId: createApproval
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateApprovalRequest"
+      responses:
+        "201":
+          description: Approval request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApprovalRequest"
+
+  /api/v1/limits/approvals/{id}/approve:
+    post:
+      tags: [Limits]
+      summary: Approve request
+      operationId: approveRequest
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovalDecision"
+      responses:
+        "200":
+          description: Request approved
+
+  /api/v1/limits/breaches:
+    get:
+      tags: [Limits]
+      summary: List limit breaches
+      operationId: listBreaches
+      responses:
+        "200":
+          description: List of breaches
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedBreaches"
+
+  # Data Quality Rail
+  /api/v1/data-quality/validate:
+    post:
+      tags: [DataQuality]
+      summary: Validate entity data
+      operationId: validateData
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValidationRequest"
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResult"
+
+  /api/v1/data-quality/scores:
+    get:
+      tags: [DataQuality]
+      summary: List quality scores
+      operationId: listQualityScores
+      parameters:
+        - name: entityType
+          in: query
+          schema:
+            type: string
+        - name: minScore
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of quality scores
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedQualityScores"
+
+  /api/v1/data-quality/anomalies:
+    get:
+      tags: [DataQuality]
+      summary: List anomalies
+      operationId: listAnomalies
+      responses:
+        "200":
+          description: List of anomalies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedAnomalies"
+
+  /api/v1/data-quality/detect-anomalies:
+    post:
+      tags: [DataQuality]
+      summary: Detect anomalies
+      operationId: detectAnomalies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnomalyDetectionRequest"
+      responses:
+        "200":
+          description: Detected anomalies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnomalyDetectionResult"
+
+  # Integration Hub Rail
+  /api/v1/integrations/connectors:
+    get:
+      tags: [Integrations]
+      summary: List connectors
+      operationId: listConnectors
+      responses:
+        "200":
+          description: List of connectors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedConnectors"
+
+    post:
+      tags: [Integrations]
+      summary: Create connector
+      operationId: createConnector
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConnectorRequest"
+      responses:
+        "201":
+          description: Connector created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connector"
+
+  /api/v1/integrations/connectors/{id}/test:
+    post:
+      tags: [Integrations]
+      summary: Test connection
+      operationId: testConnection
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Connection test result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConnectionTestResult"
+
+  /api/v1/integrations/sync-jobs:
+    get:
+      tags: [Integrations]
+      summary: List sync jobs
+      operationId: listSyncJobs
+      responses:
+        "200":
+          description: List of sync jobs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSyncJobs"
+
+    post:
+      tags: [Integrations]
+      summary: Start sync job
+      operationId: startSyncJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartSyncJobRequest"
+      responses:
+        "201":
+          description: Sync job started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncJob"
+
+  /api/v1/integrations/mappings:
+    get:
+      tags: [Integrations]
+      summary: List data mappings
+      operationId: listMappings
+      responses:
+        "200":
+          description: List of mappings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMappings"
+
+    post:
+      tags: [Integrations]
+      summary: Create mapping
+      operationId: createMapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMappingRequest"
+      responses:
+        "201":
+          description: Mapping created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DataMapping"
+
+  # SLA & Incident Rail
+  /api/v1/sla-incident/sla/definitions:
+    get:
+      tags: [SLAIncident]
+      summary: List SLA definitions
+      operationId: listSLADefinitions
+      responses:
+        "200":
+          description: List of SLA definitions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedSLADefinitions"
+
+    post:
+      tags: [SLAIncident]
+      summary: Create SLA definition
+      operationId: createSLADefinition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSLADefinitionRequest"
+      responses:
+        "201":
+          description: SLA definition created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SLADefinition"
+
+  /api/v1/sla-incident/sla/compliance:
+    get:
+      tags: [SLAIncident]
+      summary: Check SLA compliance
+      operationId: checkSLACompliance
+      responses:
+        "200":
+          description: SLA compliance status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SLAComplianceStatus"
+
+  /api/v1/sla-incident/incidents:
+    get:
+      tags: [SLAIncident]
+      summary: List incidents
+      operationId: listIncidents
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [DECLARED, INVESTIGATING, MITIGATING, RESOLVED, CLOSED]
+        - name: severity
+          in: query
+          schema:
+            type: string
+            enum: [P1, P2, P3, P4]
+      responses:
+        "200":
+          description: List of incidents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedIncidents"
+
+    post:
+      tags: [SLAIncident]
+      summary: Declare incident
+      operationId: declareIncident
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeclareIncidentRequest"
+      responses:
+        "201":
+          description: Incident declared
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /api/v1/sla-incident/incidents/{id}:
+    get:
+      tags: [SLAIncident]
+      summary: Get incident details
+      operationId: getIncident
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Incident details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /api/v1/sla-incident/incidents/{id}/timeline:
+    post:
+      tags: [SLAIncident]
+      summary: Add timeline entry
+      operationId: addTimelineEntry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TimelineEntry"
+      responses:
+        "201":
+          description: Timeline entry added
+
+  /api/v1/sla-incident/incidents/{id}/resolve:
+    post:
+      tags: [SLAIncident]
+      summary: Resolve incident
+      operationId: resolveIncident
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResolveIncidentRequest"
+      responses:
+        "200":
+          description: Incident resolved
+
+  /api/v1/sla-incident/incidents/{id}/rca:
+    post:
+      tags: [SLAIncident]
+      summary: Create RCA
+      operationId: createRCA
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRCARequest"
+      responses:
+        "201":
+          description: RCA created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RootCauseAnalysis"
+
+  /api/v1/sla-incident/status-page:
+    get:
+      tags: [SLAIncident]
+      summary: Get status page
+      operationId: getStatusPage
+      responses:
+        "200":
+          description: Status page data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusPage"
+
+  /api/v1/sla-incident/maintenance-windows:
+    get:
+      tags: [SLAIncident]
+      summary: List maintenance windows
+      operationId: listMaintenanceWindows
+      responses:
+        "200":
+          description: List of maintenance windows
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMaintenanceWindows"
+
+    post:
+      tags: [SLAIncident]
+      summary: Schedule maintenance window
+      operationId: scheduleMaintenanceWindow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScheduleMaintenanceRequest"
+      responses:
+        "201":
+          description: Maintenance window scheduled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaintenanceWindow"
 
 components:
   securitySchemes:
@@ -1003,6 +1762,1083 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Term"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # ============================================
+    # Banking-Grade Operational Rails Schemas
+    # ============================================
+
+    # Retention Rail Schemas
+    CreateRetentionPolicyRequest:
+      type: object
+      required: [name, retentionDays, artifactTypes]
+      properties:
+        name:
+          type: string
+        retentionDays:
+          type: integer
+          minimum: 1
+        artifactTypes:
+          type: array
+          items:
+            type: string
+            enum:
+              [
+                CONTRACT,
+                DOCUMENT,
+                AUDIT_LOG,
+                TRANSACTION,
+                COMMUNICATION,
+                REPORT,
+              ]
+        storageType:
+          type: string
+          enum: [STANDARD, WORM]
+        description:
+          type: string
+
+    RetentionPolicy:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        retentionDays:
+          type: integer
+        artifactTypes:
+          type: array
+          items:
+            type: string
+        storageType:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedRetentionPolicies:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetentionPolicy"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    CreateLegalHoldRequest:
+      type: object
+      required: [matterName, custodian, artifactTypes]
+      properties:
+        matterName:
+          type: string
+        custodian:
+          type: string
+        artifactTypes:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        retentionOverride:
+          type: string
+          format: date-time
+
+    LegalHold:
+      type: object
+      properties:
+        id:
+          type: string
+        matterName:
+          type: string
+        custodian:
+          type: string
+        artifactTypes:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [ACTIVE, RELEASED]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedLegalHolds:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LegalHold"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    CreatePurgeRequest:
+      type: object
+      required: [artifactIds, reason]
+      properties:
+        artifactIds:
+          type: array
+          items:
+            type: string
+        reason:
+          type: string
+
+    PurgeRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        artifactIds:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED, EXECUTED]
+        reason:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    # Secrets Rail Schemas
+    CreateKeyRingRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    KeyRing:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        keyCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedKeyRings:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/KeyRing"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    CreateKeyRequest:
+      type: object
+      required: [keyRingId, algorithm, purpose]
+      properties:
+        keyRingId:
+          type: string
+        algorithm:
+          type: string
+          enum: [RSA_2048, RSA_4096, EC_P256, EC_P384, AES_256, HMAC_SHA256]
+        purpose:
+          type: string
+          enum: [SIGNING, ENCRYPTION, AUTHENTICATION]
+        expiresIn:
+          type: string
+
+    CryptoKey:
+      type: object
+      properties:
+        id:
+          type: string
+        keyRingId:
+          type: string
+        algorithm:
+          type: string
+        purpose:
+          type: string
+        version:
+          type: integer
+        status:
+          type: string
+          enum: [ACTIVE, DISABLED, SCHEDULED_FOR_DESTRUCTION, DESTROYED]
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedKeys:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CryptoKey"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    SignRequest:
+      type: object
+      required: [keyId, data]
+      properties:
+        keyId:
+          type: string
+        data:
+          type: string
+          format: byte
+        algorithm:
+          type: string
+          default: SHA256
+
+    SignResponse:
+      type: object
+      properties:
+        signature:
+          type: string
+          format: byte
+        keyVersion:
+          type: integer
+
+    VerifyRequest:
+      type: object
+      required: [keyId, data, signature]
+      properties:
+        keyId:
+          type: string
+        data:
+          type: string
+          format: byte
+        signature:
+          type: string
+          format: byte
+
+    VerifyResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        keyVersion:
+          type: integer
+
+    # Limits Rail Schemas
+    CreateLimitRequest:
+      type: object
+      required: [name, limitType, amount, currency]
+      properties:
+        name:
+          type: string
+        limitType:
+          type: string
+          enum:
+            [
+              TRANSACTION,
+              DAILY,
+              WEEKLY,
+              MONTHLY,
+              ANNUAL,
+              COUNTERPARTY,
+              CONCENTRATION,
+              VELOCITY,
+            ]
+        amount:
+          type: number
+        currency:
+          type: string
+        scope:
+          type: string
+        counterpartyId:
+          type: string
+        requiresApproval:
+          type: boolean
+        fourEyesRequired:
+          type: boolean
+
+    Limit:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        limitType:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        utilizationPercent:
+          type: number
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, BREACHED]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedLimits:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Limit"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    LimitCheckRequest:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        scope:
+          type: string
+        counterpartyId:
+          type: string
+
+    LimitCheckResult:
+      type: object
+      properties:
+        result:
+          type: string
+          enum: [ALLOWED, DENIED, REQUIRES_APPROVAL]
+        limitId:
+          type: string
+        utilizationBefore:
+          type: number
+        utilizationAfter:
+          type: number
+        approvalRequired:
+          type: object
+          properties:
+            limitId:
+              type: string
+            reason:
+              type: string
+
+    CreateApprovalRequest:
+      type: object
+      required: [limitId, amount, currency, reason]
+      properties:
+        limitId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        reason:
+          type: string
+        transactionData:
+          type: object
+
+    ApprovalRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        limitId:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, APPROVED, REJECTED, EXPIRED]
+        firstApproverId:
+          type: string
+        secondApproverId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedApprovals:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApprovalRequest"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    ApprovalDecision:
+      type: object
+      required: [decision]
+      properties:
+        decision:
+          type: string
+          enum: [APPROVED, REJECTED]
+        comment:
+          type: string
+
+    PaginatedBreaches:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              limitId:
+                type: string
+              breachAmount:
+                type: number
+              severity:
+                type: string
+                enum: [WARNING, BREACH, CRITICAL]
+              status:
+                type: string
+                enum: [OPEN, ACKNOWLEDGED, RESOLVED]
+              createdAt:
+                type: string
+                format: date-time
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # Data Quality Rail Schemas
+    ValidationRequest:
+      type: object
+      required: [entityType, data]
+      properties:
+        entityType:
+          type: string
+        data:
+          type: object
+        strictMode:
+          type: boolean
+          default: false
+
+    ValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+              code:
+                type: string
+        warnings:
+          type: array
+          items:
+            type: object
+
+    PaginatedQualityScores:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+              entityId:
+                type: string
+              overallScore:
+                type: integer
+                minimum: 0
+                maximum: 100
+              grade:
+                type: string
+                enum: [A, B, C, D, F]
+              dimensions:
+                type: object
+              calculatedAt:
+                type: string
+                format: date-time
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    PaginatedAnomalies:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              anomalyType:
+                type: string
+                enum:
+                  [
+                    OUTLIER,
+                    PATTERN_BREAK,
+                    MISSING_EXPECTED,
+                    DUPLICATE,
+                    UNEXPECTED_VALUE,
+                    SPIKE,
+                    DROP,
+                  ]
+              severity:
+                type: string
+                enum: [LOW, MEDIUM, HIGH, CRITICAL]
+              entityType:
+                type: string
+              entityId:
+                type: string
+              field:
+                type: string
+              message:
+                type: string
+              status:
+                type: string
+                enum: [OPEN, ACKNOWLEDGED, RESOLVED, FALSE_POSITIVE]
+              detectedAt:
+                type: string
+                format: date-time
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    AnomalyDetectionRequest:
+      type: object
+      required: [entityType]
+      properties:
+        entityType:
+          type: string
+        timeRange:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        detectionTypes:
+          type: array
+          items:
+            type: string
+
+    AnomalyDetectionResult:
+      type: object
+      properties:
+        anomaliesDetected:
+          type: integer
+        anomalies:
+          type: array
+          items:
+            type: object
+
+    # Integration Hub Rail Schemas
+    CreateConnectorRequest:
+      type: object
+      required: [name, type, config]
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            [
+              REST_API,
+              GRAPHQL,
+              SOAP,
+              DATABASE,
+              SFTP,
+              MESSAGE_QUEUE,
+              WEBHOOK,
+              CUSTOM,
+            ]
+        config:
+          type: object
+          properties:
+            baseUrl:
+              type: string
+            authType:
+              type: string
+              enum: [NONE, API_KEY, OAUTH2, BASIC, CERTIFICATE]
+            credentials:
+              type: object
+
+    Connector:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, ERROR]
+        health:
+          type: string
+          enum: [HEALTHY, DEGRADED, UNHEALTHY]
+        lastSyncAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedConnectors:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Connector"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    ConnectionTestResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        latencyMs:
+          type: integer
+        error:
+          type: string
+
+    StartSyncJobRequest:
+      type: object
+      required: [connectorId]
+      properties:
+        connectorId:
+          type: string
+        mode:
+          type: string
+          enum: [FULL, INCREMENTAL, REAL_TIME]
+          default: INCREMENTAL
+        entities:
+          type: array
+          items:
+            type: string
+
+    SyncJob:
+      type: object
+      properties:
+        id:
+          type: string
+        connectorId:
+          type: string
+        mode:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, RUNNING, PAUSED, COMPLETED, FAILED, CANCELLED]
+        recordsProcessed:
+          type: integer
+        recordsFailed:
+          type: integer
+        startedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+
+    PaginatedSyncJobs:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SyncJob"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    CreateMappingRequest:
+      type: object
+      required: [connectorId, sourceEntity, targetEntity, fieldMappings]
+      properties:
+        connectorId:
+          type: string
+        sourceEntity:
+          type: string
+        targetEntity:
+          type: string
+        fieldMappings:
+          type: array
+          items:
+            type: object
+            properties:
+              source:
+                type: string
+              target:
+                type: string
+              transform:
+                type: string
+
+    DataMapping:
+      type: object
+      properties:
+        id:
+          type: string
+        connectorId:
+          type: string
+        sourceEntity:
+          type: string
+        targetEntity:
+          type: string
+        fieldMappings:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedMappings:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataMapping"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # SLA & Incident Rail Schemas
+    CreateSLADefinitionRequest:
+      type: object
+      required: [name, metric, target, measurementWindow, service]
+      properties:
+        name:
+          type: string
+        metric:
+          type: string
+          enum:
+            [
+              AVAILABILITY,
+              LATENCY_P50,
+              LATENCY_P95,
+              LATENCY_P99,
+              ERROR_RATE,
+              THROUGHPUT,
+              DATA_ACCURACY,
+              RECOVERY_TIME,
+            ]
+        target:
+          type: number
+        measurementWindow:
+          type: string
+          enum: [HOURLY, DAILY, WEEKLY, MONTHLY, QUARTERLY]
+        service:
+          type: string
+
+    SLADefinition:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        metric:
+          type: string
+        target:
+          type: number
+        measurementWindow:
+          type: string
+        service:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedSLADefinitions:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/SLADefinition"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    SLAComplianceStatus:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              slaId:
+                type: string
+              slaName:
+                type: string
+              currentValue:
+                type: number
+              target:
+                type: number
+              status:
+                type: string
+                enum: [COMPLIANT, AT_RISK, BREACHED]
+              trendDirection:
+                type: string
+                enum: [IMPROVING, STABLE, DEGRADING]
+
+    DeclareIncidentRequest:
+      type: object
+      required: [title, description, severity]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [P1, P2, P3, P4]
+        impact:
+          type: string
+          enum: [CRITICAL, MAJOR, MINOR, NONE]
+        affectedServices:
+          type: array
+          items:
+            type: string
+
+    Incident:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [P1, P2, P3, P4]
+        status:
+          type: string
+          enum: [DECLARED, INVESTIGATING, MITIGATING, RESOLVED, CLOSED]
+        impact:
+          type: string
+        affectedServices:
+          type: array
+          items:
+            type: string
+        assignee:
+          type: string
+        timeline:
+          type: array
+          items:
+            type: object
+        declaredAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+
+    PaginatedIncidents:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Incident"
+        meta:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    TimelineEntry:
+      type: object
+      required: [type, message]
+      properties:
+        type:
+          type: string
+          enum: [UPDATE, ESCALATION, MITIGATION, RESOLUTION, COMMUNICATION]
+        message:
+          type: string
+        author:
+          type: string
+
+    ResolveIncidentRequest:
+      type: object
+      required: [resolution]
+      properties:
+        resolution:
+          type: string
+        preventionActions:
+          type: array
+          items:
+            type: string
+
+    CreateRCARequest:
+      type: object
+      required: [summary, rootCause, timeline, actionItems]
+      properties:
+        summary:
+          type: string
+        rootCause:
+          type: string
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              time:
+                type: string
+              action:
+                type: string
+        actionItems:
+          type: array
+          items:
+            type: object
+            properties:
+              description:
+                type: string
+              owner:
+                type: string
+              dueDate:
+                type: string
+                format: date-time
+
+    RootCauseAnalysis:
+      type: object
+      properties:
+        id:
+          type: string
+        incidentId:
+          type: string
+        summary:
+          type: string
+        rootCause:
+          type: string
+        timeline:
+          type: array
+          items:
+            type: object
+        actionItems:
+          type: array
+          items:
+            type: object
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+        publishedAt:
+          type: string
+          format: date-time
+
+    StatusPage:
+      type: object
+      properties:
+        overallStatus:
+          type: string
+          enum: [OPERATIONAL, DEGRADED, PARTIAL_OUTAGE, MAJOR_OUTAGE]
+        services:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              status:
+                type: string
+                enum:
+                  [
+                    OPERATIONAL,
+                    DEGRADED,
+                    PARTIAL_OUTAGE,
+                    MAJOR_OUTAGE,
+                    UNDER_MAINTENANCE,
+                  ]
+              lastIncident:
+                type: string
+                format: date-time
+        activeIncidents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Incident"
+        scheduledMaintenance:
+          type: array
+          items:
+            $ref: "#/components/schemas/MaintenanceWindow"
+
+    ScheduleMaintenanceRequest:
+      type: object
+      required: [title, startTime, endTime, affectedServices]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        affectedServices:
+          type: array
+          items:
+            type: string
+        notifySubscribers:
+          type: boolean
+          default: true
+
+    MaintenanceWindow:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        affectedServices:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED]
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginatedMaintenanceWindows:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/MaintenanceWindow"
         meta:
           $ref: "#/components/schemas/PaginationMeta"
 
