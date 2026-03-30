@@ -1,20 +1,23 @@
 # IOF OpenAPI Specification
 
-Official OpenAPI 3.1 specification for the Islamic Open Finance (IOF) Platform.
+Official OpenAPI 3.1 specification for the Islamic Open Finance™ (IOF) Platform.
 
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-green.svg)](https://spec.openapis.org/oas/v3.1.0)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-6BA539?logo=openapiinitiative&logoColor=white)](https://spec.openapis.org/oas/v3.1.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&logoColor=white)](LICENSE)
 
 ## Overview
 
-The IOF Platform provides 29 specialized Rails for Shariah-compliant banking operations:
+The IOF Platform provides 105 specialized Rails for Shariah-compliant banking operations:
 
-- **Core Rails (5)**: Contracts, Cards, Clearing, Treasury, Shariah
-- **Access & Identity (3)**: IAM, Organizations, Workspaces
-- **Operations (6)**: Transactions, Transfers, Reconciliation, Events, Webhooks, Audit
-- **Financial (4)**: Ledger, Products, Pricing, Limits
-- **Governance (9)**: KYC/KYB, AML/CFT, Consent/Privacy, Disputes, Collections, Zakat, Impact, Observability
-- **Developer & Partner (2)**: Developer, Partners
+- **Core Business (6)**: Contracts, KYC, Compliance, AML, Zakat, Cards
+- **Financial (8)**: Treasury, Clearing, Portfolio, Risk, Limits, Underwriting, Ledger, Billing
+- **Payments & Routing (5)**: Routing, Messages, ISO 20022, Reconciliation, Transfers
+- **Governance & Legal (5)**: Governance, Legal, Disputes, Cases, Collections
+- **Identity & Access (7)**: Auth, OAuth2, SAML, Consent, API Keys, MFA, IAM
+- **Integration & Events (6)**: Webhooks, Events, Notifications, Integrations, Partners, Developer
+- **Infrastructure (9)**: Analytics, Reporting, Search, Audit, Observability, Health, Metadata, Taxonomy, Secrets
+- **Control Plane (6)**: Workspaces, Organizations, Feature Flags, BYOC, Jurisdictions, Residency
+- **Data & Records (4)**: Documents, Data Quality, Retention, Reference Data
 
 All APIs follow AAOIFI standards for Islamic finance compliance.
 
@@ -92,7 +95,7 @@ Authorization: Bearer eyJhbGciOiJSUzI1NiIs...
 For service-to-service authentication:
 
 ```http
-X-API-Key: iof_live_abc123xyz789
+X-API-Key: $IOF_API_KEY
 ```
 
 **Obtain API Key**:
@@ -367,10 +370,12 @@ curl -X GET \
 
 Official SDKs are available in multiple languages:
 
-| Language       | Package                 | Repository                                                            |
-| -------------- | ----------------------- | --------------------------------------------------------------------- |
-| **TypeScript** | `@islamic-open-finance/sdk` | [iof-sdk-typescript](https://github.com/Islamic-Open-Finance/iof-sdk-typescript) |
-| **Python**     | `iof-sdk`               | [iof-sdk-python](https://github.com/Islamic-Open-Finance/iof-sdk-python)         |
+| Language       | Package                 | Repository                                                                                   |
+| -------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
+| **TypeScript** | `@iof/sdk`              | [iof-sdks/typescript](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/typescript) |
+| **Python**     | `iof-sdk`               | [iof-sdks/python](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/python)         |
+| **Java**       | `com.iof:iof-sdk`       | [iof-sdks/java](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/java)             |
+| **Go**         | `github.com/iof/go-sdk` | [iof-sdks/go](https://github.com/Islamic-Open-Finance/iof-sdks/tree/main/go)                 |
 
 ## Validation
 
@@ -422,11 +427,9 @@ This project is licensed under the Apache License 2.0 - see [LICENSE](LICENSE) f
 
 ## Related Projects
 
-- [IOF TypeScript SDK](https://github.com/Islamic-Open-Finance/iof-sdk-typescript) - TypeScript/JavaScript client
-- [IOF Python SDK](https://github.com/Islamic-Open-Finance/iof-sdk-python) - Python client
-- [IOF Mock Server](https://github.com/Islamic-Open-Finance/iof-mock) - Testing mock server
+- [IOF SDKs](https://github.com/Islamic-Open-Finance/iof-sdks) - Official client libraries
 - [IOF DevTools](https://github.com/Islamic-Open-Finance/iof-devtools) - CLI tools and utilities
-- [IOF Helm Charts](https://github.com/Islamic-Open-Finance/iof-helm-charts) - Kubernetes deployment
+- [IOF Platform](https://github.com/Islamic-Open-Finance/app) - Main platform repository
 
 ---
 
