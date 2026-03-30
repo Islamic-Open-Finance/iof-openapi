@@ -1,7 +1,7 @@
 {
   "name": "@iof/openapi",
   "version": "1.0.0",
-  "description": "Official OpenAPI 3.1 specification for the Islamic Open Finance Platform",
+  "description": "Official OpenAPI 3.1 specification for the Islamic Open Finance™ Platform",
   "main": "spec/openapi.yaml",
   "scripts": {
     "serve": "npx @redocly/cli preview-docs spec/openapi.yaml",
@@ -27,7 +27,7 @@
     "fintech",
     "banking"
   ],
-  "author": "Islamic Open Finance",
+  "author": "Islamic Open Finance™",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/Islamic-Open-Finance/iof-openapi/issues"
