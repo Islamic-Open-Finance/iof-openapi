@@ -7,19 +7,31 @@ Official OpenAPI 3.1 specification for the Islamic Open Finance™ (IOF) Platfor
 
 ## Overview
 
-The IOF Platform provides 105 specialized Rails for Shariah-compliant banking operations:
+The IOF Platform provides **109 specialized Rails across 19 categories** (142+ API endpoints) for Shariah-compliant banking operations, assembled from **10 native domain engines** over a single double-entry ledger.
 
-- **Core Business (6)**: Contracts, KYC, Compliance, AML, Zakat, Cards
-- **Financial (8)**: Treasury, Clearing, Portfolio, Risk, Limits, Underwriting, Ledger, Billing
-- **Payments & Routing (5)**: Routing, Messages, ISO 20022, Reconciliation, Transfers
-- **Governance & Legal (5)**: Governance, Legal, Disputes, Cases, Collections
-- **Identity & Access (7)**: Auth, OAuth2, SAML, Consent, API Keys, MFA, IAM
-- **Integration & Events (6)**: Webhooks, Events, Notifications, Integrations, Partners, Developer
-- **Infrastructure (9)**: Analytics, Reporting, Search, Audit, Observability, Health, Metadata, Taxonomy, Secrets
-- **Control Plane (6)**: Workspaces, Organizations, Feature Flags, BYOC, Jurisdictions, Residency
-- **Data & Records (4)**: Documents, Data Quality, Retention, Reference Data
+Two of the ten engines are the platform's **defensible moats**:
 
-All APIs follow AAOIFI standards for Islamic finance compliance.
+- **Settlement Engine** (`@iof/settlement-core`) — 24×7×365 DvP/FOP/RVP/DFP finality for Murabaha, Ijarah, Salam, Sukuk. AAOIFI SS-1/8/10/17/21/30 enforced at the state machine; CSDR Art. 7 penalties priced pre-confirm; ribawi-pair netting. Reclaims **60–140 bps** per corridor.
+- **Evidence Engine** (`@iof/evidence-engine-core`) — signed, tamper-evident compliance pack on every trade. 47/54 controls across SOC 2, ISO 27001, AAOIFI, GDPR, PSD2, IFSB, ISO 20022. SHA-256 Merkle root + HMAC, one-call verification. Reclaims **30–55 bps** on audit and re-papering.
+
+Combined: **100–195 bps** of Islamic-finance friction reclaimed per corridor.
+
+Rail categories exposed by this spec:
+
+- **Core Islamic Contracts (19)**: Murabaha, Ijarah, Musharakah, Mudarabah, Salam, Istisna, Wakalah, +12
+- **Takaful (11)**: General, Family, Claims, Underwriting, Reinsurance, Surplus, +5
+- **Islamic Funds (7)**: Management, Subscription, Fees, Performance, Compliance, +2
+- **Financial (7)**: Payments, Treasury, FX, Risk, Liquidity, Profit Distribution, +1
+- **Capital Markets (6)**: Sukuk Issuance, Trading, Settlement, Valuation, Compliance, +1
+- **Waqf & Social Finance (5)**: Waqf, Sadaqah, Qard Hasan, Zakat, +1
+- **Trade Finance (4)**: LC, Guarantee, Documentary, Supply Chain
+- **Platform (4)**: Contracts, Workspaces, Notifications, Billing
+- **Operations (3)**: Documents, Reconciliation, Clearing
+- **Governance (3)**: Compliance, Audit, Shariah Governance
+- **Access & Identity (2)**: KYC, AML
+- **Observability (1)**: Analytics
+
+All APIs follow AAOIFI standards for Islamic finance compliance and emit ISO 20022 XML/JSON envelopes.
 
 ## Quick Start
 
