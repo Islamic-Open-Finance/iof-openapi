@@ -7,7 +7,7 @@ Official OpenAPI 3.1 specification for the Islamic Open Finance™ (IOF) Platfor
 
 ## Overview
 
-The IOF Platform provides **109 specialized Rails across 19 categories** (142+ API endpoints) for Shariah-compliant banking operations, assembled from **10 native domain engines** over a single double-entry ledger.
+The IOF Platform provides **73 specialized Rails across 13 categories** (142+ API endpoints) for Shariah-compliant banking operations, assembled from **10 native domain engines** over a single double-entry ledger.
 
 Two of the ten engines are the platform's **defensible moats**:
 
@@ -30,6 +30,7 @@ Rail categories exposed by this spec:
 - **Governance (3)**: Compliance, Audit, Shariah Governance
 - **Access & Identity (2)**: KYC, AML
 - **Observability (1)**: Analytics
+- **Know Your Asset (1)**: Asset integrity (KYA)
 
 All APIs follow AAOIFI standards for Islamic finance compliance and emit ISO 20022 XML/JSON envelopes.
 
